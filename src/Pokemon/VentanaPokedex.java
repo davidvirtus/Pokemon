@@ -1,5 +1,7 @@
 package Pokemon;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -34,6 +36,44 @@ public class VentanaPokedex extends javax.swing.JFrame {
     /**
      * Creates new form VentanaPokedex
      */
+    private void dibujaElPokemonQueEstaEnLaPosicion (int posicion){
+        
+        int fila = posicion / 31; // el entero de la división me da la fila
+        
+        int columna = posicion % 31; //el resto de la división me da la columna
+        
+        //apunto al buffer
+        Graphics2D g2 = (Graphics2D) buffer.getGraphics();
+    
+        //borro lo que hubiera y lo pinto de negro
+        g2.setColor(Color.black);
+    
+        g2.fillRect(0, 0, alto, ancho);
+    
+        //pinto la imágen y le doy las posiciones
+        g2.drawImage(imagenPokemons,
+                0,//el sitio donde se pinta
+                0,//el sitio donde se pinta
+                ancho,//cuanto mide de ancho
+                alto,//cuanto mide de alto
+                96*columna,//le digo donde quiero que empiece a pintar la imágen en x
+                96*fila,//le digo donde quiero que empiece a pintar la imágen en y
+                96*columna + 96,//hasta donde tiene que pintar
+                96*fila + 96,//hasta donde tiene que pintar
+                null);
+        repaint();
+    }
+    
+    @Override
+    public void paint(Graphics g){
+        super.paintComponents(g);
+        
+        //apunto al jPanel
+        Graphics2D g2 = (Graphics2D) jPanel1.getGraphics();
+        
+        //pinto la imágen
+        g2.drawImage(buffer, 0, 0, alto, ancho, null);
+    }
     //este es el constructor de la clase
     public VentanaPokedex() {
         initComponents();
@@ -49,6 +89,9 @@ public class VentanaPokedex extends javax.swing.JFrame {
         
         //inicializo el buffer
         Graphics2D g2 = buffer.createGraphics();
+        
+        //llamo al método
+        dibujaElPokemonQueEstaEnLaPosicion(0);
     }
 
     /**
@@ -77,9 +120,19 @@ public class VentanaPokedex extends javax.swing.JFrame {
             .addGap(0, 200, Short.MAX_VALUE)
         );
 
-        jButton1.setText("jButton1");
+        jButton1.setText("Izquierda");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jButton1MousePressed(evt);
+            }
+        });
 
-        jButton2.setText("jButton2");
+        jButton2.setText("Derecha");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jButton2MousePressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -94,7 +147,7 @@ public class VentanaPokedex extends javax.swing.JFrame {
                         .addComponent(jButton1)
                         .addGap(18, 18, 18)
                         .addComponent(jButton2)))
-                .addContainerGap(201, Short.MAX_VALUE))
+                .addContainerGap(198, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -109,6 +162,18 @@ public class VentanaPokedex extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MousePressed
+        contador--;
+        if (contador < 0){contador = 0;}
+        dibujaElPokemonQueEstaEnLaPosicion(contador);
+    }//GEN-LAST:event_jButton1MousePressed
+
+    private void jButton2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MousePressed
+        contador++;
+        if (contador > 507){contador = 0;}
+        dibujaElPokemonQueEstaEnLaPosicion(contador);
+    }//GEN-LAST:event_jButton2MousePressed
 
     /**
      * @param args the command line arguments
