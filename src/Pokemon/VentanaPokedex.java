@@ -33,7 +33,7 @@ public class VentanaPokedex extends javax.swing.JFrame {
     private Image imagenPokemons;
     
     //creo un contador que me diga el número del pokemon que estoy pintando
-    private int contador = 1;
+    private int contador = 0;
     
     //les doy un ancho y un alto
     private int ancho = 200, alto = 200;
@@ -191,6 +191,8 @@ public class VentanaPokedex extends javax.swing.JFrame {
                 jButton2MousePressed(evt);
             }
         });
+
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
