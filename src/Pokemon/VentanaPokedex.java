@@ -6,6 +6,11 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -32,6 +37,20 @@ public class VentanaPokedex extends javax.swing.JFrame {
     
     //les doy un ancho y un alto
     private int ancho = 200, alto = 200;
+    
+    //conectamos la base de datos
+    
+    
+    private Statement estado;
+    private ResultSet resultadoConsulta;
+    private Connection conexion;
+    
+    
+    //////////////////////////////////////////////////////////////////////////
+    
+    //hashmap para almacenar el resultado de la consulta
+    
+    HashMap <String,Pokemon> listaPokemons = new HashMap();
 
     /**
      * Creates new form VentanaPokedex
@@ -62,6 +81,16 @@ public class VentanaPokedex extends javax.swing.JFrame {
                 96*fila + 96,//hasta donde tiene que pintar
                 null);
         repaint();
+        escribeDatos();
+    }
+    private void escribeDatos(){
+        Pokemon p = listaPokemons.get(String.valueOf(contador+1));//Convertimos a String el int con valueOf
+        if (p != null){
+            jLabel1.setText(p.nombre);
+        }
+        else{
+            jLabel1.setText("No hay datos!");
+        }
     }
     
     @Override
@@ -90,6 +119,34 @@ public class VentanaPokedex extends javax.swing.JFrame {
         //inicializo el buffer
         Graphics2D g2 = buffer.createGraphics();
         
+        
+        
+        
+        
+        //conexión a la base de datos/////////////////////////
+        try{
+            Class.forName("com.mysql.jdbc.Driver");//cojo un conector que hace que java pueda acceder a una base de datos
+            conexion = DriverManager.getConnection("jdbc:mysql://127.0.0.1/test", "root", "");//root es el usuario
+            estado = conexion.createStatement();
+            resultadoConsulta = estado.executeQuery("Select * from pokemon");
+            
+            //cargo el resultado de la query en mi hashmap
+            while (resultadoConsulta.next()){
+                Pokemon p = new Pokemon();
+                p.nombre = resultadoConsulta.getString(2);//coge el resultado de la columna que elijo (2)
+                p.generation_id = resultadoConsulta.getInt(5);
+                p.evolution_chain_id = resultadoConsulta.getInt(6);
+                p.specie = resultadoConsulta.getString(12);
+                
+                listaPokemons.put(resultadoConsulta.getString(1), p);//en la lista cogemos la columna 1 y el valor p (pokemon)
+            }
+            
+        }
+        catch(Exception e){
+            
+        }
+        //////////////////////////////////////////////////////
+        
         //llamo al método
         dibujaElPokemonQueEstaEnLaPosicion(0);
     }
@@ -106,6 +163,7 @@ public class VentanaPokedex extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -141,23 +199,27 @@ public class VentanaPokedex extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jButton1)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton2)))
+                        .addComponent(jButton2))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(198, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(37, 37, 37)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 43, Short.MAX_VALUE))
+                .addGap(0, 28, Short.MAX_VALUE))
         );
 
         pack();
@@ -173,6 +235,13 @@ public class VentanaPokedex extends javax.swing.JFrame {
         contador++;
         if (contador > 507){contador = 0;}
         dibujaElPokemonQueEstaEnLaPosicion(contador);
+        Pokemon p = listaPokemons.get(String.valueOf(contador+1));//Convertimos a String el int con valueOf
+        if (p != null){
+            jLabel1.setText(p.nombre);
+        }
+        else{
+            jLabel1.setText("No hay datos!");
+        }
     }//GEN-LAST:event_jButton2MousePressed
 
     /**
@@ -213,6 +282,7 @@ public class VentanaPokedex extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }
