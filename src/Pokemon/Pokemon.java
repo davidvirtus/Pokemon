@@ -14,4 +14,9 @@ public class Pokemon {
     public int generation_id = 0;
     public int evolution_chain_id = 0;
     public String specie="";
+    public String habitat="";
+    public String color="";
+    public String weight="";
+    public String height="";
+    public String Id="";
 }

@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -38,20 +40,19 @@ public class VentanaPokedex extends javax.swing.JFrame {
     //les doy un ancho y un alto
     private int ancho = 200, alto = 200;
     
-    //conectamos la base de datos
-    
     
     private Statement estado;
     private ResultSet resultadoConsulta;
     private Connection conexion;
     
+    //creo el sonido
+    Clip sonidoBoton;
+    
     
     //////////////////////////////////////////////////////////////////////////
     
     //hashmap para almacenar el resultado de la consulta
-    
     HashMap <String,Pokemon> listaPokemons = new HashMap();
-    //HashMap <String,Pokemon> listaSpecies = new HashMap();
 
     /**
      * Creates new form VentanaPokedex
@@ -89,9 +90,22 @@ public class VentanaPokedex extends javax.swing.JFrame {
         if (p != null){
             jLabel1.setText(p.nombre);
             jLabel2.setText(p.specie);
+            jLabel6.setText(p.habitat);
+            jLabel8.setText(p.color);
+            jLabel10.setText(p.weight);
+            jLabel12.setText(p.height);
+            jLabel13.setText(p.Id);
         }
         else{
             jLabel1.setText("No hay datos!");
+        }
+    }
+    private void reproduceSonido(){
+        try{
+            sonidoBoton = AudioSystem.getClip();
+            sonidoBoton.open(AudioSystem.getAudioInputStream(getClass().getResource("boton.wav")));;
+        }catch (Exception ex){
+            
         }
     }
     
@@ -108,6 +122,9 @@ public class VentanaPokedex extends javax.swing.JFrame {
     //este es el constructor de la clase
     public VentanaPokedex() {
         initComponents();
+        
+        //pongo un color de fondo para el JFrame
+        this.getContentPane().setBackground(Color.orange);
         
         try {
             imagenPokemons = ImageIO.read(getClass().getResource("black-white.png"));
@@ -139,6 +156,11 @@ public class VentanaPokedex extends javax.swing.JFrame {
                 p.generation_id = resultadoConsulta.getInt(5);
                 p.evolution_chain_id = resultadoConsulta.getInt(6);
                 p.specie = resultadoConsulta.getString(12);
+                p.habitat = resultadoConsulta.getString(15);
+                p.color = resultadoConsulta.getString(13);
+                p.weight = resultadoConsulta.getString(11);
+                p.height = resultadoConsulta.getString(10);
+                p.Id = resultadoConsulta.getString(1);
                 
                 listaPokemons.put(resultadoConsulta.getString(1), p);//en la lista cogemos la columna 1 y el valor p (pokemon)
             }
@@ -148,6 +170,9 @@ public class VentanaPokedex extends javax.swing.JFrame {
             
         }
         //////////////////////////////////////////////////////
+        
+        //llamo al método que reproduce el sonido
+        reproduceSonido();
         
         //llamo al método
         dibujaElPokemonQueEstaEnLaPosicion(0);
@@ -167,8 +192,20 @@ public class VentanaPokedex extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setForeground(java.awt.Color.white);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -201,8 +238,53 @@ public class VentanaPokedex extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setFont(new java.awt.Font("Luminari", 3, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(204, 0, 51));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+
+        jLabel2.setFont(new java.awt.Font("Luminari", 3, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 102, 0));
+        jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+
+        jLabel3.setFont(new java.awt.Font("SignPainter", 3, 24)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(102, 0, 0));
+        jLabel3.setText("Especie:");
+
+        jLabel4.setFont(new java.awt.Font("SignPainter", 3, 24)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(102, 0, 0));
+        jLabel4.setText("Nombre:");
+
+        jLabel5.setFont(new java.awt.Font("SignPainter", 3, 24)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(102, 0, 0));
+        jLabel5.setText("Habitat:");
+
+        jLabel6.setFont(new java.awt.Font("Luminari", 3, 18)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(255, 102, 0));
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+
+        jLabel7.setFont(new java.awt.Font("SignPainter", 3, 24)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(102, 0, 0));
+        jLabel7.setText("Color:");
+
+        jLabel8.setFont(new java.awt.Font("Luminari", 3, 18)); // NOI18N
+
+        jLabel9.setFont(new java.awt.Font("SignPainter", 3, 24)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(102, 0, 0));
+        jLabel9.setText("Peso:");
+
+        jLabel10.setFont(new java.awt.Font("Luminari", 3, 18)); // NOI18N
+        jLabel10.setForeground(new java.awt.Color(204, 102, 0));
+
+        jLabel11.setFont(new java.awt.Font("SignPainter", 3, 24)); // NOI18N
+        jLabel11.setForeground(new java.awt.Color(102, 0, 0));
+        jLabel11.setText("Altura:");
+
+        jLabel12.setFont(new java.awt.Font("Luminari", 3, 18)); // NOI18N
+        jLabel12.setForeground(new java.awt.Color(204, 102, 0));
+
+        jLabel13.setFont(new java.awt.Font("Luminari", 3, 18)); // NOI18N
+        jLabel13.setForeground(new java.awt.Color(204, 0, 51));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -219,29 +301,77 @@ public class VentanaPokedex extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE)
+                                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(6, 6, 6)
+                                                .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                            .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(186, 186, 186)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(162, 162, 162)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(6, 6, 6)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
+                            .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 28, Short.MAX_VALUE))
+                .addGap(23, 23, 23))
         );
 
         pack();
@@ -251,6 +381,13 @@ public class VentanaPokedex extends javax.swing.JFrame {
         contador--;
         if (contador < 0){contador = 0;}
         dibujaElPokemonQueEstaEnLaPosicion(contador);
+        
+        //hago que el sonido se reinicie para que vuelva a sonar al pulsar el
+        //botón de nuevo
+        sonidoBoton.setFramePosition(0);
+        
+        //reproduzco el sonido
+        sonidoBoton.start();
     }//GEN-LAST:event_jButton1MousePressed
 
     private void jButton2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MousePressed
@@ -260,12 +397,16 @@ public class VentanaPokedex extends javax.swing.JFrame {
         Pokemon p = listaPokemons.get(String.valueOf(contador+1));//Convertimos a String el int con valueOf
         if (p != null){
             jLabel1.setText(p.nombre);
-            jLabel2.setText(p.specie);
         }
         else{
             jLabel1.setText("No hay datos!");
-            jLabel2.setText("No hay datos!");
         }
+        //hago que el sonido se reinicie para que vuelva a sonar al pulsar el
+        //botón de nuevo
+        sonidoBoton.setFramePosition(0);
+        
+        //reproduzco el sonido
+        sonidoBoton.start();
     }//GEN-LAST:event_jButton2MousePressed
 
     /**
@@ -307,7 +448,18 @@ public class VentanaPokedex extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }
